@@ -2,13 +2,15 @@ const express = require('express');
 
 const app = express();
 
-app.get("/",(req,res)=>{
-    res.send("Hello World")
-});
+app.use("/user",(req,res,next)=>{
+    res.send("User 1");
+    next();
+},
 
-app.get("/test",(req,res)=>{
-    res.send("Test")
-});
+    (req,res) => {
+        res.send("User 2")
+    }
+)
 
 app.listen(7777,()=>{
     console.log("server listening...")
