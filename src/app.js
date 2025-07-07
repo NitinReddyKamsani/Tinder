@@ -2,15 +2,13 @@ const express = require('express');
 
 const app = express();
 
-app.use("/user",(req,res,next)=>{
-    res.send("User 1");
-    next();
-},
+const {isAdmin} = require("./middlewares/auth")
 
-    (req,res) => {
-        res.send("User 2")
-    }
-)
+app.use("/admin",isAdmin)
+
+app.get("/admin/getUsers",(req,res)=>{
+    res.send("Users retreived");
+})
 
 app.listen(7777,()=>{
     console.log("server listening...")
