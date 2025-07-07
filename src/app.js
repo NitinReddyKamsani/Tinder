@@ -1,5 +1,7 @@
 const express = require('express');
 
+const connectDB = require("./config/database")
+
 const app = express();
 
 const {isAdmin} = require("./middlewares/auth")
@@ -19,6 +21,14 @@ app.get("/admin/getUsers",(req,res)=>{
     }
 })
 
+connectDB().then(()=>{
+console.log("Database connected successfully")
 app.listen(7777,()=>{
     console.log("server listening...")
 });
+}
+)
+.catch(err => console.log(err));
+
+
+

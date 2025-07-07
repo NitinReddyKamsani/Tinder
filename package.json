@@ -4,8 +4,8 @@
   "description": "Dev Tinder is a Mern stack project which helps to connect with fellow developers.",
   "main": "index.js",
   "scripts": {
-    "start" : "node src/app.js",
-    "dev" : "nodemon src/app.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/NitinReddyKamsani/DevTinder#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.16.1"
   }
 }
