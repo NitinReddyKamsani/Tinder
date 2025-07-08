@@ -2,6 +2,8 @@ const express = require('express');
 
 const connectDB = require("./config/database")
 
+const User = require("./models/User")
+
 const app = express();
 
 const {isAdmin} = require("./middlewares/auth")
@@ -20,6 +22,24 @@ app.get("/admin/getUsers",(req,res)=>{
         res.status(500).send("Unexpected error occured");
     }
 })
+
+app.post("/signup",async(req,res)=>{
+
+    const user = new User({
+
+        firstName : "Nitin Reddy",
+        lastName : "Kamsani",
+        email : "xyz@gmail.com",
+        password : "xyz",
+
+    })
+
+    await user.save();
+    res.send("User details saved")
+}
+)
+
+
 
 connectDB().then(()=>{
 console.log("Database connected successfully")
