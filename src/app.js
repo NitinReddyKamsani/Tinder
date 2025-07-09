@@ -6,6 +6,9 @@ const User = require("./models/User")
 
 const app = express();
 
+app.use(express.json())
+
+
 const {isAdmin} = require("./middlewares/auth")
 
 app.use("/admin",isAdmin)
@@ -25,14 +28,7 @@ app.get("/admin/getUsers",(req,res)=>{
 
 app.post("/signup",async(req,res)=>{
 
-    const user = new User({
-
-        firstName : "Nitin Reddy",
-        lastName : "Kamsani",
-        email : "xyz@gmail.com",
-        password : "xyz",
-
-    })
+    const user = new User(req.body)
 
     await user.save();
     res.send("User details saved")
