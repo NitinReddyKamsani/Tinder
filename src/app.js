@@ -32,10 +32,23 @@ app.post("/signup",async(req,res)=>{
 
     await user.save();
     res.send("User details saved")
-}
-)
+})
 
+app.get("/users",async(req,res)=>{
+   // const userEmail = req.body.email;
 
+    try{
+
+        console.log(userEmail)
+        const user = await User.find({})
+        res.send(user)
+    }
+    catch(err){
+
+        res.status(404).send("User not found");
+    }
+
+})
 
 connectDB().then(()=>{
 console.log("Database connected successfully")
