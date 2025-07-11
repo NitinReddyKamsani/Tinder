@@ -26,6 +26,7 @@ app.get("/admin/getUsers",(req,res)=>{
     }
 })
 
+//inserting a user dynmaically 
 app.post("/signup",async(req,res)=>{
 
     const user = new User(req.body)
@@ -34,11 +35,20 @@ app.post("/signup",async(req,res)=>{
     res.send("User details saved")
 })
 
+
+//adding a user into db
+app.post("/users",async(req,res)=>{
+
+    const user = new User(req.body);
+
+    await user.save();
+    res.send("User added")
+})
+
+//fetching users
 app.get("/users",async(req,res)=>{
    // const userEmail = req.body.email;
-
     try{
-
         console.log(userEmail)
         const user = await User.find({})
         res.send(user)
@@ -50,6 +60,7 @@ app.get("/users",async(req,res)=>{
 
 })
 
+//deleting a user by id
 app.delete("/users",async(req,res)=>{
 
     const Id = req.body.userId;
@@ -59,13 +70,27 @@ app.delete("/users",async(req,res)=>{
         res.send(user);
     }
     catch(err){
+        res.status(404).send("User not found")
+    }
 
+})
+
+//updating a user by id
+app.patch("/users",async(req,res)=>{
+
+    const userId = req.body.userId;
+    const data = req.body;
+
+    try {
+
+        const user = await User.findByIdAndUpdate(userId,data)
+        res.send(user);
+    }
+    catch(err){
         res.status(404).send("User not found")
 
     }
-
-}
-)
+})
 
 connectDB().then(()=>{
 console.log("Database connected successfully")
