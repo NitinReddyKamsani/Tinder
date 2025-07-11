@@ -50,6 +50,23 @@ app.get("/users",async(req,res)=>{
 
 })
 
+app.delete("/users",async(req,res)=>{
+
+    const Id = req.body.userId;
+
+    try {
+        const user = await User.findByIdAndDelete(Id)
+        res.send(user);
+    }
+    catch(err){
+
+        res.status(404).send("User not found")
+
+    }
+
+}
+)
+
 connectDB().then(()=>{
 console.log("Database connected successfully")
 app.listen(7777,()=>{
