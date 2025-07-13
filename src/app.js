@@ -1,18 +1,48 @@
 const express = require('express');
-
 const connectDB = require("./config/database")
-
 const User = require("./models/User")
-
+const bcrypt = require("bcrypt")
+const {validateSignUp} = require("./utils/validate")
 const app = express();
 
 app.use(express.json())
-
 
 const {isAdmin} = require("./middlewares/auth")
 
 app.use("/admin",isAdmin)
 
+//inserting a user dynmaically 
+app.post("/signup",async(req,res)=>{
+    try {
+    
+        //validating the data
+        validateSignUp(req)
+
+        //encrypting password
+        const {firstName,lastName,email,age,about,skills,gender,password} = req.body;
+
+        const passwordHash = awaitbcrypt.hash(password,10)
+    
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password : passwordHash,
+            age,
+            about,
+            skills,
+            gender
+        })
+    
+        await user.save();
+        res.send("User details saved")
+    }
+    catch(err){
+        res.status(400).send(err.message)
+    }
+    })
+
+//retreving the users
 app.get("/admin/getUsers",(req,res)=>{
 
     try {
@@ -24,24 +54,6 @@ app.get("/admin/getUsers",(req,res)=>{
     }
 })
 
-//inserting a user dynmaically 
-app.post("/signup",async(req,res)=>{
-
-    const user = new User(req.body)
-
-    await user.save();
-    res.send("User details saved")
-})
-
-
-//adding a user into db
-app.post("/users",async(req,res)=>{
-
-    const user = new User(req.body);
-
-    await user.save();
-    res.send("User added")
-})
 
 //fetching users
 app.get("/users",async(req,res)=>{
