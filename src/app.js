@@ -73,24 +73,37 @@ app.delete("/users",async(req,res)=>{
 })
 
 //updating a user by id
-app.patch("/users",async(req,res)=>{
+app.patch("/users", async (req, res) => {
+    const { userId, ...data } = req.body;
 
-    const userId = req.body.userId;
-    const data = req.body;
+    const allowedUpdates = ["firstName", "lastName", "age", "password", "about", "skills", "gender"];
+    const updateKeys = Object.keys(data);
+    const isValidUpdate = updateKeys.every((key) => allowedUpdates.includes(key));
+
+    if (!isValidUpdate) {
+        return res.status(400).send({ error: "Invalid update fields" });
+    }
 
     try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            data,
+            {
+                returnDocument: "after",
+                runValidators: true
+            }
+        );
 
-        const user = await User.findByIdAndUpdate(userId,data,{
-            returnDocument : "after", //give the details after perfoming the updtae
-            runValidators : true
-        })
-        res.send("User updated successfully");
-    }
-    catch(err){
-        res.status(404).send("User not found")
+        if (!user) {
+            return res.status(404).send({ error: "User not found" });
+        }
 
+        res.send({ message: "User updated successfully", user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: "Server error" });
     }
-})
+});
 
 connectDB().then(()=>{
 console.log("Database connected successfully")

@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
     about : {
         type : "String",
         required : true,
-        default : "User"
+        default : "User",
+        maxLength : 200,
     },
     skills : {
         type : [String],
@@ -40,9 +41,6 @@ const userSchema = new mongoose.Schema({
         validate(value){
             if(!["male","female","others"].includes(value)){
                 throw new Error("Invalid Gender")
-            }
-            else{
-                console.log(value) ;
             }
         }
     }
