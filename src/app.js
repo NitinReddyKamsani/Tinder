@@ -16,8 +16,6 @@ app.use("/admin",isAdmin)
 app.get("/admin/getUsers",(req,res)=>{
 
     try {
-
-    throw new error("hfief")
     res.send("Users retreived");
 
     }
@@ -49,7 +47,6 @@ app.post("/users",async(req,res)=>{
 app.get("/users",async(req,res)=>{
    // const userEmail = req.body.email;
     try{
-        console.log(userEmail)
         const user = await User.find({})
         res.send(user)
     }
@@ -83,7 +80,10 @@ app.patch("/users",async(req,res)=>{
 
     try {
 
-        const user = await User.findByIdAndUpdate(userId,data)
+        const user = await User.findByIdAndUpdate(userId,data,{
+            returnDocument : "after", //give the details after perfoming the updtae
+            runValidators : true
+        })
         res.send("User updated successfully");
     }
     catch(err){

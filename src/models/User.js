@@ -10,10 +10,15 @@ const userSchema = new mongoose.Schema({
         type : "String",
         
     },
+    age : {
+        type : "Number",
+        min : 18,
+        required : true
+    },
     email : {
         type : "String",
         required : true,
-        unique : true
+        unique : true,
 
     },
     password : {
@@ -22,13 +27,28 @@ const userSchema = new mongoose.Schema({
         unique : true
 
     },
+    about : {
+        type : "String",
+        required : true,
+        default : "User"
+    },
     skills : {
         type : [String],
     },
     gender : {
         type :  "String",
+        validate(value){
+            if(!["male","female","others"].includes(value)){
+                throw new Error("Invalid Gender")
+            }
+            else{
+                console.log(value) ;
+            }
+        }
     }
 
+},{
+    timestamps : true
 })
 
 module.exports = mongoose.model("User", userSchema);
