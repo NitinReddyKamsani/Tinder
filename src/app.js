@@ -21,7 +21,12 @@ app.post("/signup",async(req,res)=>{
         //encrypting password
         const {firstName,lastName,email,age,about,skills,gender,password} = req.body;
 
-        const passwordHash = awaitbcrypt.hash(password,10)
+        const existingUser = await User.findOne({email})
+        if(existingUser) {
+            throw new Error("User already exists")
+        }
+        
+        const passwordHash = await bcrypt.hash(password,10)
     
         const user = new User({
             firstName,
@@ -41,6 +46,25 @@ app.post("/signup",async(req,res)=>{
         res.status(400).send(err.message)
     }
     })
+
+//login api 
+app.post("/login", async(req,res)=>{
+
+    const {email,password}= req.body;
+
+    const user = await User.findOne({email});
+    if(!user) {
+            throw new Error("Invalid email or password")
+    }
+    const isPasswordMatch = await bcrypt.compare(password,user.password);
+
+    if(!isPasswordMatch) {
+        throw new Error("Invalid password");
+    }
+    else {
+        res.send("Login successful");
+    }
+})
 
 //retreving the users
 app.get("/admin/getUsers",(req,res)=>{
