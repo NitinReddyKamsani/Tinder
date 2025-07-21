@@ -4,8 +4,11 @@ const User = require("./models/User")
 const bcrypt = require("bcrypt")
 const {validateSignUp} = require("./utils/validate")
 const app = express();
+const cookieParser = require("cookie-parser")
 
 app.use(express.json())
+app.use(cookieParser())
+
 
 const {isAdmin} = require("./middlewares/auth")
 
@@ -58,11 +61,14 @@ app.post("/login", async(req,res)=>{
     }
     const isPasswordMatch = await bcrypt.compare(password,user.password);
 
-    if(!isPasswordMatch) {
-        throw new Error("Invalid password");
+    if(isPasswordMatch) {
+
+        res.cookie("token","nitin");
+        res.send("Login successful");
+       
     }
     else {
-        res.send("Login successful");
+        throw new Error("Invalid password");
     }
 })
 
@@ -77,6 +83,16 @@ app.get("/admin/getUsers",(req,res)=>{
         res.status(500).send("Unexpected error occured");
     }
 })
+
+
+app.get("/profile", async(req,res)=>{
+
+    const cookies = req.cookies;
+
+    console.log(cookies);
+    res.send("Reading cookies");
+
+        })
 
 
 //fetching users
