@@ -94,7 +94,6 @@ app.get("/profile", async(req,res)=>{
 
         })
 
-
 //fetching users
 app.get("/users",async(req,res)=>{
    // const userEmail = req.body.email;
