@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 const {validateSignUp} = require("./utils/validate")
 const app = express();
 const cookieParser = require("cookie-parser")
+const jwt = require('jsonwebtoken');
 
 app.use(express.json())
 app.use(cookieParser())
@@ -63,7 +64,11 @@ app.post("/login", async(req,res)=>{
 
     if(isPasswordMatch) {
 
-        res.cookie("token","nitin");
+        //create JWT token
+        const token = await jwt.sign({_id : user._id},"Nitin@29");
+    
+        //send the token in the cookie
+        res.cookie("token",token);
         res.send("Login successful");
        
     }
@@ -89,9 +94,18 @@ app.get("/profile", async(req,res)=>{
 
     const cookies = req.cookies;
 
-    console.log(cookies);
-    res.send("Reading cookies");
+    const {token} = cookies;
 
+    const decoded = await jwt.verify(token,"Nitin@29");
+
+    const {_id} = decoded;
+
+    const user = await User.findById(_id);
+    if(!token){
+        res.send("Invalid token");
+    }
+
+    res.send(user);
         })
 
 //fetching users
