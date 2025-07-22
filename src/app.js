@@ -96,14 +96,16 @@ app.get("/profile", async(req,res)=>{
 
     const {token} = cookies;
 
+    if(!token){
+        res.send("Invalid token");
+    }
+
     const decoded = await jwt.verify(token,"Nitin@29");
 
     const {_id} = decoded;
 
     const user = await User.findById(_id);
-    if(!token){
-        res.send("Invalid token");
-    }
+    
 
     res.send(user);
         })
