@@ -1,3 +1,7 @@
+const jwt = require('jsonwebtoken');
+const User = require("../models/User");
+
+
 const isAdmin = (req,res,next)=>{
     console.log("checking auth");
 
@@ -12,6 +16,28 @@ const isAdmin = (req,res,next)=>{
     }
 };
 
+const userAuth = async (req,res,next)=>{
+
+    try{
+           const {token} = req.cookies;
+            if(!token){
+                throw new Error("invalid token");
+            }
+
+            const decodedMsg = await jwt.verify(token,"Nitin@29");
+            const {_id} = decodedMsg;
+
+            const user = await User.findById(_id);
+            if(!user) {
+                res.send("User not found");
+            }
+            res.send(user);
+            next();          
+}catch (err){
+    res.send(err.message);
+}
+}
 module.exports =  {
-    isAdmin
+    isAdmin,
+    userAuth
 }
