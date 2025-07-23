@@ -6,6 +6,8 @@ const {validateSignUp} = require("./utils/validate")
 const app = express();
 const cookieParser = require("cookie-parser")
 const jwt = require('jsonwebtoken');
+const {userAuth} = require("./middlewares/auth")
+
 
 app.use(express.json())
 app.use(cookieParser())
@@ -60,12 +62,12 @@ app.post("/login", async(req,res)=>{
     if(!user) {
             throw new Error("Invalid email or password")
     }
-    const isPasswordMatch = await bcrypt.compare(password,user.password);
+    const isPasswordMatch = await user.validatePassword(password);
 
     if(isPasswordMatch) {
 
         //create JWT token
-        const token = await jwt.sign({_id : user._id},"Nitin@29");
+        const token = await user.getJWT();
     
         //send the token in the cookie
         res.cookie("token",token);
@@ -90,24 +92,15 @@ app.get("/admin/getUsers",(req,res)=>{
 })
 
 
-app.get("/profile", async(req,res)=>{
+app.get("/profile", userAuth,async(req,res)=>{
 
-    const cookies = req.cookies;
-
-    const {token} = cookies;
-
-    if(!token){
-        res.send("Invalid token");
-    }
-
-    const decoded = await jwt.verify(token,"Nitin@29");
-
-    const {_id} = decoded;
-
-    const user = await User.findById(_id);
-    
-
+    try{
+    const user = req.user;
     res.send(user);
+    }
+    catch(err){
+        res.status(404).send("User not found");
+    }
         })
 
 //fetching users
@@ -123,6 +116,15 @@ app.get("/users",async(req,res)=>{
     }
 
 })
+
+app.post("/sendconnectionrequest", userAuth, (req,res)=>{
+
+    const user = req.user;
+    res.send(user.firstName + " sent you connection request" );
+
+}
+)
+
 
 //deleting a user by id
 app.delete("/users",async(req,res)=>{

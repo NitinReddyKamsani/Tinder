@@ -31,7 +31,8 @@ const userAuth = async (req,res,next)=>{
             if(!user) {
                 res.send("User not found");
             }
-            res.send(user);
+            
+            req.user = user;
             next();          
 }catch (err){
     res.send(err.message);
