@@ -1,8 +1,6 @@
 const express = require('express');
 const connectDB = require("./config/database")
 const User = require("./models/User")
-const bcrypt = require("bcrypt")
-const {validateSignUp} = require("./utils/validate")
 const app = express();
 const cookieParser = require("cookie-parser")
 const jwt = require('jsonwebtoken');
@@ -12,27 +10,9 @@ const {userAuth} = require("./middlewares/auth")
 app.use(express.json())
 app.use(cookieParser())
 
-
-const {isAdmin} = require("./middlewares/auth")
-
-app.use("/admin",isAdmin)
-
-//inserting a user dynmaically 
-
-//login api 
-
-
-//retreving the users
-app.get("/admin/getUsers",(req,res)=>{
-
-    try {
-    res.send("Users retreived");
-
-    }
-    catch(err){
-        res.status(500).send("Unexpected error occured");
-    }
-})
+const Authrouter = require("./routes/authRoute")
+const Profilerouter = require("./routes/ProfileRoute")
+const Requestrouter = require("./routes/requestRoute");
 
 
 
@@ -50,15 +30,6 @@ app.get("/users",async(req,res)=>{
     }
 
 })
-
-app.post("/sendconnectionrequest", userAuth, (req,res)=>{
-
-    const user = req.user;
-    res.send(user.firstName + " sent you connection request" );
-
-}
-)
-
 
 //deleting a user by id
 app.delete("/users",async(req,res)=>{

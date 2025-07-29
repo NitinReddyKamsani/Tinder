@@ -1,8 +1,12 @@
 const express = require('express');
+const {validateSignUp} = require("../utils/validate")
+const User = require('../models/User');
+const bcrypt = require("bcrypt");
+const Authrouter = express.Router();
 
-const router = express.Router();
 
-router.post("/signup",async(req,res)=>{
+
+Authrouter.post("/signup",async(req,res)=>{
     try {
     
         //validating the data
@@ -37,7 +41,7 @@ router.post("/signup",async(req,res)=>{
     }
     })
 
-    router.post("/login", async(req,res)=>{
+    Authrouter.post("/login", async(req,res)=>{
 
         const {email,password}= req.body;
     
@@ -63,4 +67,4 @@ router.post("/signup",async(req,res)=>{
     })
 
     
-module.exports = router;
+module.exports = Authrouter;
