@@ -16,6 +16,28 @@ const validateSignUp = (req)=>{
 
 }
 
+const validateEdits = (req)=>{
+
+    const allowedUpdates = [
+        "firstName",
+        "lastName",
+        "age",
+        "about",
+        "skills",
+        "gender",
+    ]
+
+    const isValidEdit = Object.keys(req.body).every((update=>allowedUpdates.includes(update)))
+
+    if(isValidEdit) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 module.exports = {
     validateSignUp,
+    validateEdits
 }

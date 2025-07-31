@@ -15,7 +15,9 @@ const Profilerouter = require("./routes/ProfileRoute")
 const Requestrouter = require("./routes/requestRoute");
 
 
-
+app.use("/",Authrouter);
+app.use("/",Profilerouter);
+app.use("/",Requestrouter);
 
 //fetching users
 app.get("/users",async(req,res)=>{
