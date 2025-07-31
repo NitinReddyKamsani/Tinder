@@ -41,6 +41,22 @@ Authrouter.post("/signup",async(req,res)=>{
     }
     })
 
+    Authrouter.post("/forgotpassword",async(req,res)=>{
+
+        const email = req.body.email;
+        const userUpdate= await User.findOne({email});
+        if(!userUpdate) {
+            throw new Error("User not found");
+        }
+        else {
+        const password = req.body.password;
+        const passwordHash = await bcrypt.hash(password,10);
+        userUpdate.password = passwordHash;
+        await userUpdate.save();
+        res.send("Password updated successfully");
+        }
+    })
+
     Authrouter.post("/login", async(req,res)=>{
 
         const {email,password}= req.body;
