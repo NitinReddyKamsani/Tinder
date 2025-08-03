@@ -15,7 +15,7 @@ const ConnectionRequest = new mongoose.Schema({
         required : true,
         enum : {
             values : ["ignore","interested","accepted","rejected"],
-            message : `${values} is not supported`,
+            message : `{values} is not supported`,
         }
     },
     
