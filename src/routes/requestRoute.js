@@ -36,9 +36,6 @@ Requestrouter.post("/request/send/:status/:toid",userAuth,async(req,res)=>{
         if(idExists) {
             return res.status(400).json({message:"Request already sent"})
         }
-        if(fromId === toId){
-            return res.status(400).json({message:"You cannot send request to yourself"})
-        }
         if(reverseConection){
             return res.status(400).json({message:"You cant send invite,please accept if interested"});
         }
@@ -53,6 +50,13 @@ Requestrouter.post("/request/send/:status/:toid",userAuth,async(req,res)=>{
         res.json({
             message : "Request sent succesfully",
             data,
+        })
+
+        ConnectionRequest.pre("save",function(){
+            if(ConnectionRequest.fromConnectionId.equals(ConnectionRequest.toConnectionId)){
+                throw new Error("You cant send request to yourself");
+            }
+            next();
         })
     }
     catch(err){
