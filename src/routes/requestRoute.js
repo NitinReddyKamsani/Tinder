@@ -25,8 +25,22 @@ Requestrouter.post("/request/send/:status/:toid",userAuth,async(req,res)=>{
             toConnectionId : toId
         })
 
+        const reverseConection = await ConnectionRequest.findOne({
+            fromConnectionId : toId,
+            toConnectionId : fromId
+        })
+
+
         if(idExists) {
             return res.status(400).json({message:"Request already sent"})
+        }
+        if(fromId === toId){
+            return res.status(400).json({message:"You cannot send request to yourself"})
+        }
+
+        
+        if(reverseConection){
+            return res.status(400).json({message:"You cant send invite,please accept if interested"});
         }
 
         const Request = new ConnectionRequest({
