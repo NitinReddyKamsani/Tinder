@@ -20,7 +20,14 @@ Requestrouter.post("/request/send/:status/:toid",userAuth,async(req,res)=>{
             return res.status(400).json({message:"Invalid status"});
         }
 
-        
+        const idExists = await ConnectionRequest.findOne({
+            fromConnectionId : fromId,
+            toConnectionId : toId
+        })
+
+        if(idExists) {
+            return res.status(400).json({message:"Request already sent"})
+        }
 
         const Request = new ConnectionRequest({
 
