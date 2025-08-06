@@ -86,9 +86,9 @@ Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
 
     try{
 
-        const status = req.params;
-        const fromId = req.user._id;
-        const toId = req.params.id;
+        const status = req.params.status;
+        const loggedInId = req.user._id;
+        const interestedPersonId = req.params.id;
 
         const allowedStatus = ["accepted","rejected"];
         if(!allowedStatus.includes(status)){
@@ -96,11 +96,11 @@ Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
         }
         
         const user = await User.findOne({
-            _id : fromId,
-            id : toId,
-            status : "interested",
-        
+            _id : interestedPersonId,
+            fromConnectionId : loggedInId,
+            status : "interested"
         })
+
         if(!user){
             return res.status(404).send("User not found");
         }
