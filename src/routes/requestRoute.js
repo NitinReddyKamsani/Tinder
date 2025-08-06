@@ -95,14 +95,14 @@ Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
             throw new Error("Invalid status");  
         }
         
-        const user = await User.findOne({
+        const connectionRequest = await User.findOne({
             _id : interestedPersonId,
             fromConnectionId : loggedInId,
             status : "interested"
         })
 
-        if(!user){
-            return res.status(404).send("User not found");
+        if(!connectionRequest){
+            return res.status(404).send("Connection request not found");
         }
         return res.send("Accepted the user request");
 
