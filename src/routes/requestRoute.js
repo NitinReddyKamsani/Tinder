@@ -78,6 +78,38 @@ Requestrouter.post("/request/send/:status/:toid", userAuth, async (req, res) => 
         console.error(err);
         return res.status(500).json({ message: err.message });
     }
+
+
 });
+
+Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
+
+    try{
+
+        const status = req.params;
+        const fromId = req.user._id;
+        const toId = req.params.id;
+
+        const allowedStatus = ["accepted","rejected"];
+        if(!allowedStatus.includes(status)){
+            throw new Error("Invalid status");  
+        }
+        
+        const user = await User.findOne({
+            _id : fromId,
+            id : toId,
+            status : "interested",
+        
+        })
+        if(!user){
+            return res.status(404).send("User not found");
+        }
+        return res.send("Accepted the user request");
+
+    }catch(err){
+        throw new Error("Bad request");
+    }
+
+})
 
 module.exports = Requestrouter;
