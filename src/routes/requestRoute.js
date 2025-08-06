@@ -87,7 +87,7 @@ Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
     try{
 
         const status = req.params.status;
-        const loggedInId = req.user._id;
+        const loggedInId = req.user;
         const interestedPersonId = req.params.id;
 
         const allowedStatus = ["accepted","rejected"];
@@ -95,16 +95,19 @@ Requestrouter.post("/request/review/:status/:id",userAuth,async(req,res)=>{
             throw new Error("Invalid status");  
         }
         
-        const connectionRequest = await User.findOne({
+        const connectionReq = await ConnectionRequest.findOne({
             _id : interestedPersonId,
-            fromConnectionId : loggedInId,
+            toConnectionId : loggedInId._id,
             status : "interested"
         })
-
-        if(!connectionRequest){
+        if(!connectionReq){
             return res.status(404).send("Connection request not found");
         }
-        return res.send("Accepted the user request");
+
+        connectionReq.status = status;
+        const data = await connectionReq.save();
+        res.json({message : "Connection request " + status,data})
+       
 
     }catch(err){
         throw new Error("Bad request");
