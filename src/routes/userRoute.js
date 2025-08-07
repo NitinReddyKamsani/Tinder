@@ -10,8 +10,9 @@ Userrouter.get("/user/request/received",userAuth,async(req,res)=>{
         const user = await connectionRequest.find({
             toConnectionId : loggedIn._id,
             status : "interested",
-        })
+        }).populate(["fromConnectionId","toConnectionId"],["firstName","lastName","email"]);
         
+
         res.json({message : "All the users appear here",user});
     }
     catch(err){
