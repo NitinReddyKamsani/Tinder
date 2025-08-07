@@ -10,11 +10,42 @@ Userrouter.get("/user/request/received",userAuth,async(req,res)=>{
         const user = await connectionRequest.find({
             toConnectionId : loggedIn._id,
             status : "interested",
-        }).populate(["fromConnectionId"],"firstName lastName age skills about gender");
+        })
+        .populate(["fromConnectionId"],"firstName lastName age skills about gender");
         res.json({message : "All the users appear here",user});
     }
     catch(err){
         throw new Error("No interests found");
+    }
+})
+
+Userrouter.get("/user/connections",userAuth,async(req,res)=>{
+    try{
+        const loggedIn = req.user;
+        const user = await connectionRequest.find({
+          $or : [
+            { toConnectionId : loggedIn._id,status : "accepted"},
+            { fromConnectionId : loggedIn._id,status : "accepted"},
+          ]
+    }).populate("fromConnectionId","firstName lastName age skills about gender")
+    .populate("toConnectionId","firstName lastName age skills about gender");
+
+
+    const otherUsers = user.map((conn)=>{
+        if(String(conn.fromConnectionId._id) === String(loggedIn._id)){
+            return conn.toConnectionId;
+        }
+        else{
+            return conn.fromConnectionId;
+        }
+    })
+
+    res.json({message : "All the users appear here",otherUsers});
+
+    res.json({message : "All the users appear here",user});
+}
+    catch(err){
+        throw new Error("No connections found");
     }
 })
 
