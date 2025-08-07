@@ -11,11 +11,14 @@ app.use(cookieParser())
 const Authrouter = require("./routes/authRoute")
 const Profilerouter = require("./routes/ProfileRoute")
 const Requestrouter = require("./routes/requestRoute");
+const Userrouter = require('./routes/userRoute');
+
 
 
 app.use("/",Authrouter);
 app.use("/",Profilerouter);
 app.use("/",Requestrouter);
+app.use("/",Userrouter);
 
 //fetching users
 app.get("/users",async(req,res)=>{
