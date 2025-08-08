@@ -1,6 +1,7 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const connectionRequest = require("../models/connectionRequest");
+const User = require("../models/User");
 const Userrouter = express.Router();
 
 Userrouter.get("/user/request/received",userAuth,async(req,res)=>{
@@ -47,6 +48,27 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
     catch(err){
         throw new Error("No connections found");
     }
+})
+
+Userrouter.get("/feed",userAuth,async(req,res)=>{
+
+    try{
+        const loggedIn = req.user;
+        const users = await User.find();
+        const feedUsers = users.map((user)=>{
+            if(user._id.toString() === loggedIn._id.toString()){
+                return null;
+            }
+            else{
+                return user;
+            }
+        })
+        res.json({message : "All the users appear here",feedUsers});
+    }
+    catch(err){
+        throw new Error("No users found");
+    }
+
 })
 
 module.exports = Userrouter;
