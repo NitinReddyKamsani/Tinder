@@ -43,7 +43,6 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
 
     res.json({message : "All the users appear here",otherUsers});
 
-    res.json({message : "All the users appear here",user});
 }
     catch(err){
         throw new Error("No connections found");
