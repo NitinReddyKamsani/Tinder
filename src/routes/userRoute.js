@@ -52,22 +52,42 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
 
 Userrouter.get("/feed",userAuth,async(req,res)=>{
 
-    try{
+    try {
         const loggedIn = req.user;
+      
+        // Get all users
         const users = await User.find();
-        const feedUsers = users.map((user)=>{
-            if(user._id.toString() === loggedIn._id.toString()){
-                return null;
+      
+        // Filter out the logged-in user
+        let feedUsers = users.filter(user => user._id.toString() !== loggedIn._id.toString());
+
+        //find all the connected users
+        const connections = await connectionRequest.find({
+
+            $or : [{
+                fromConnectionId : loggedIn._id,
+                status : {$in : ["accepted","interested","ignored","rejected"]}
+            },
+            {
+                toConnectionId : loggedIn._id,
+                status : {$in : ["accepted","interested","ignored","rejected"]}
             }
-            else{
-                return user;
-            }
+        
+        ]
         })
+
+       const connectionSet = new Set();
+       connections.forEach((conn)=>{
+
+            connectionSet.add(String(conn.fromConnectionId._id));
+            connectionSet.add(String(conn.toConnectionId._id));
+        })
+        feedUsers = feedUsers.filter(user=> !connectionSet.has(String(user._id)));
         res.json({message : "All the users appear here",feedUsers});
-    }
-    catch(err){
+      
+      } catch (err) {
         throw new Error("No users found");
-    }
+      }
 
 })
 
