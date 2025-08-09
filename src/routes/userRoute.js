@@ -49,45 +49,47 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
     }
 })
 
-Userrouter.get("/feed",userAuth,async(req,res)=>{
-
+Userrouter.get("/feed", userAuth, async (req, res) => {
     try {
-        const loggedIn = req.user;
-      
-        // Get all users
-        const users = await User.find();
-      
-        // Filter out the logged-in user
-        let feedUsers = users.filter(user => user._id.toString() !== loggedIn._id.toString());
-
-        //find all the connected users
-        const connections = await connectionRequest.find({
-
-            $or : [{
-                fromConnectionId : loggedIn._id,
-                status : {$in : ["accepted","interested","ignored","rejected"]}
-            },
-            {
-                toConnectionId : loggedIn._id,
-                status : {$in : ["accepted","interested","ignored","rejected"]}
-            }
-        
+      const loggedIn = req.user;
+  
+      // Get all users except the logged-in user
+      const users = await User.find().select("firstName lastName age skills about gender");
+      let feedUsers = users.filter(user => user._id.toString() !== loggedIn._id.toString());
+  
+      // Get all existing connection requests involving the user
+      const connections = await connectionRequest.find({
+        $or: [
+          {
+            fromConnectionId: loggedIn._id,
+            status: { $in: ["accepted", "interested", "ignored", "rejected"] }
+          },
+          {
+            toConnectionId: loggedIn._id,
+            status: { $in: ["accepted", "interested", "ignored", "rejected"] }
+          }
         ]
-        })
-
-       const connectionSet = new Set();
-       connections.forEach((conn)=>{
-
-            connectionSet.add(String(conn.fromConnectionId._id));
-            connectionSet.add(String(conn.toConnectionId._id));
-        })
-        feedUsers = feedUsers.filter(user=> !connectionSet.has(String(user._id)));
-        res.json({message : "All the users appear here",feedUsers});
-      
-      } catch (err) {
-        throw new Error("No users found");
-      }
-
-})
-
+      })
+        .populate("fromConnectionId", "firstName")
+        .populate("toConnectionId", "firstName");
+  
+      // Collect all connected user IDs
+      const connectionSet = new Set();
+      connections.forEach((conn) => {
+        connectionSet.add(String(conn.fromConnectionId._id));
+        connectionSet.add(String(conn.toConnectionId._id));
+      });
+  
+      // Filter out users that are already connected
+      feedUsers = feedUsers.filter(
+        (user) => !connectionSet.has(String(user._id))
+      );
+  
+      res.json({ message: "All the users appear here", feedUsers });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "No users found" });
+    }
+  });
+  
 module.exports = Userrouter;
