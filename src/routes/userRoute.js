@@ -52,6 +52,10 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
 Userrouter.get("/feed", userAuth, async (req, res) => {
     try {
       const loggedIn = req.user;
+
+      const page = parseInt(req.query.skip) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
   
       const connections = await connectionRequest.find({
         $or : [
@@ -73,9 +77,7 @@ Userrouter.get("/feed", userAuth, async (req, res) => {
         {_id : {$nin : Array.from(hideUsers)}},
         {_id : {$ne : loggedIn._id}}
 
-       ]
-
-      }).select("firstName lastName age skills about gender");
+       ]}).select("firstName lastName age skills about gender").skip(skip).limit(limit);
     
       res.json({ message: "All the users appear here", users });
 
