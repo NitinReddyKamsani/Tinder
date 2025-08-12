@@ -74,7 +74,7 @@ Authrouter.post("/signup",async(req,res)=>{
         
             //send the token in the cookie
             res.cookie("token",token);
-            res.send("Login successful");
+            res.send(user);
            
         }
         else {
