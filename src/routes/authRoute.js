@@ -63,7 +63,7 @@ Authrouter.post("/signup",async(req,res)=>{
     
         const user = await User.findOne({email});
         if(!user) {
-                throw new Error("Invalid email or password")
+            return res.status(401).json({ message: "Invalid credentials" });
         }
         const isPasswordMatch = await user.validatePassword(password);
     
