@@ -25,6 +25,7 @@ const validateEdits = (req)=>{
         "about",
         "skills",
         "gender",
+        "photo"
     ]
 
     const isValidEdit = Object.keys(req.body).every((update=>allowedUpdates.includes(update)))

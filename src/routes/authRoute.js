@@ -13,7 +13,7 @@ Authrouter.post("/signup",async(req,res)=>{
         validateSignUp(req)
 
         //encrypting password
-        const {firstName,lastName,email,age,about,skills,gender,password} = req.body;
+        const {firstName,lastName,email,age,about,skills,gender,password,photo} = req.body;
 
         const existingUser = await User.findOne({email})
         if(existingUser) {
@@ -30,7 +30,8 @@ Authrouter.post("/signup",async(req,res)=>{
             age,
             about,
             skills,
-            gender
+            gender,
+            photo
         })
     
         await user.save();
