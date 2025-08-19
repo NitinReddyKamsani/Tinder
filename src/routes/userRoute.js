@@ -12,7 +12,7 @@ Userrouter.get("/user/request/received",userAuth,async(req,res)=>{
             toConnectionId : loggedIn._id,
             status : "interested",
         })
-        .populate(["fromConnectionId"],"firstName lastName age skills about gender");
+        .populate(["fromConnectionId"],"firstName lastName age skills about gender photo");
         res.json({message : "All the users appear here",user});
     }
     catch(err){
@@ -28,8 +28,8 @@ Userrouter.get("/user/connections",userAuth,async(req,res)=>{
             { toConnectionId : loggedIn._id,status : "accepted"},
             { fromConnectionId : loggedIn._id,status : "accepted"},
           ]
-    }).populate("fromConnectionId","firstName lastName age skills about gender")
-    .populate("toConnectionId","firstName lastName age skills about gender");
+    }).populate("fromConnectionId","firstName lastName age skills about gender photo")
+    .populate("toConnectionId","firstName lastName age skills about gender photo");
 
 
     const otherUsers = user.map((conn)=>{
@@ -80,7 +80,7 @@ Userrouter.get("/feed", userAuth, async (req, res) => {
         {_id : {$nin : Array.from(hideUsers)}},
         {_id : {$ne : loggedIn._id}}
 
-       ]}).select("firstName lastName age skills about gender").skip(skip).limit(limit);
+       ]}).select("firstName lastName age skills about gender photo").skip(skip).limit(limit);
     
       res.json({ message: "All the users appear here", users });
 

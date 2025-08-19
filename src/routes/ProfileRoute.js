@@ -16,6 +16,8 @@ Profilerouter.get("/profile/view", userAuth,async(req,res)=>{
         })
 
 Profilerouter.patch("/profile/update", userAuth,async(req,res)=>{
+    console.log("PATCH /profile/update hit");
+    console.log("Body:", req.body);
     try{
        if(!validateEdits(req)){
         throw new Error("cant update your information");
