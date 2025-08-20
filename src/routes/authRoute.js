@@ -34,8 +34,13 @@ Authrouter.post("/signup",async(req,res)=>{
             photo
         })
     
-        await user.save();
-        res.send("User details saved")
+       const savedUser =  await user.save();
+
+        const token = await savedUser.getJWT();
+        res.cookie("token",token);
+
+        res.json({message : "User created succesfully", data : savedUser});
+
     }
     catch(err){
         res.status(400).send(err.message)
