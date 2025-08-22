@@ -1,0 +1,1 @@
+export const uri = "mongodb+srv://kamsaninitinreddy:nitin29@node.leaz4bj.mongodb.net/devTinder"
