@@ -11,6 +11,7 @@ app.use(cors({
     credentials : true,
 }));
 
+require('dotenv').config()
 
 
 app.use(express.json())

@@ -24,7 +24,7 @@ const userAuth = async (req,res,next)=>{
                 return res.status(401).send("Please Login");
             }
 
-            const decodedMsg = await jwt.verify(token,"Nitin@29");
+            const decodedMsg = await jwt.verify(token,process.env.JWT_TOKEN);
             const {_id} = decodedMsg;
 
             const user = await User.findById(_id);
