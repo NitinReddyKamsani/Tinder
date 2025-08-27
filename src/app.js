@@ -4,6 +4,7 @@ const User = require("./models/User")
 const app = express();
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const http = require('http');
 
 
 app.use(cors({
@@ -17,6 +18,8 @@ require('dotenv').config()
 app.use(express.json())
 app.use(cookieParser())
 
+
+
 const Authrouter = require("./routes/authRoute")
 const Profilerouter = require("./routes/ProfileRoute")
 const Requestrouter = require("./routes/requestRoute");
@@ -28,6 +31,22 @@ app.use("/",Authrouter);
 app.use("/",Profilerouter);
 app.use("/",Requestrouter);
 app.use("/",Userrouter);
+
+const server = http.createServer(app);
+
+const socket = require("socket.io")
+
+const io = socket(server,{
+    cors : {
+        origin : "http://localhost:5173",
+    }
+})
+
+
+io.on("connection",(socket)=>{
+    console.log("user connected")
+
+})
 
 //fetching users
 app.get("/users",async(req,res)=>{
@@ -93,8 +112,8 @@ app.patch("/users", async (req, res) => {
 
 connectDB().then(()=>{
 console.log("Database connected successfully")
-app.listen(7777,()=>{
-    console.log("server listening...")
+server.listen(7777,()=>{
+    console.log("server listening on port 7777...")
 });
 }
 )
