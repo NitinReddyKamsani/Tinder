@@ -5,6 +5,7 @@ const app = express();
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const http = require('http');
+const initializeSocket = require('./utils/socket');
 
 
 app.use(cors({
@@ -34,19 +35,7 @@ app.use("/",Userrouter);
 
 const server = http.createServer(app);
 
-const socket = require("socket.io")
-
-const io = socket(server,{
-    cors : {
-        origin : "http://localhost:5173",
-    }
-})
-
-
-io.on("connection",(socket)=>{
-    console.log("user connected")
-
-})
+initializeSocket(server);
 
 //fetching users
 app.get("/users",async(req,res)=>{
