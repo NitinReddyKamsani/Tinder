@@ -12,9 +12,14 @@ const initializeSocket = (server) => {
         io.on("connection",(socket)=>{
 
             //Handle events
-            socket.on("joinchat",()=>{})
+            socket.on("joinChat",({userId,targetUserId})=>{
+                const roomId = [userId,targetUserId].sort().join("_");
+                console.log("joined room : "+ roomId);
+                socket.join(roomId);
 
-            socket.on("sendmessage",()=>{})
+            })
+
+            socket.on("sendMessage",()=>{})
 
             socket.on("disconnect",()=>{})
 
