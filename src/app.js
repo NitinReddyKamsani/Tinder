@@ -25,6 +25,7 @@ const Authrouter = require("./routes/authRoute")
 const Profilerouter = require("./routes/ProfileRoute")
 const Requestrouter = require("./routes/requestRoute");
 const Userrouter = require('./routes/userRoute');
+const chatRouter = require('./routes/chatRoute');
 
 
 
@@ -32,6 +33,7 @@ app.use("/",Authrouter);
 app.use("/",Profilerouter);
 app.use("/",Requestrouter);
 app.use("/",Userrouter);
+app.use("/",chatRouter);
 
 const server = http.createServer(app);
 
